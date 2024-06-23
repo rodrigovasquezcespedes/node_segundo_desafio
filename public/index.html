@@ -42,7 +42,6 @@
 <body>
     <h1>Bienvenido al Repertorio de Canciones</h1>
     <div id="form">
-        <input type="text" id="id" placeholder="ID">
         <input type="text" id="titulo" placeholder="Título">
         <input type="text" id="artista" placeholder="Artista">
         <input type="text" id="tono" placeholder="Tono">
@@ -79,8 +78,8 @@
                     <td>${song.artista}</td>
                     <td>${song.tono}</td>
                     <td>
-                        <button onclick="deleteSong(${song.id})">Eliminar</button>
-                        <button onclick="updateSong(${song.id})">Actualizar</button>
+                        <button onclick="deleteSong('${song.id}')">Eliminar</button>
+                        <button onclick="updateSong('${song.id}', '${song.titulo}', '${song.artista}', '${song.tono}')">Actualizar</button>
                     </td>
                 `;
                 songsList.appendChild(row);
@@ -88,7 +87,6 @@
         }
 
         async function addSong() {
-            const id = document.getElementById('id').value;
             const titulo = document.getElementById('titulo').value;
             const artista = document.getElementById('artista').value;
             const tono = document.getElementById('tono').value;
@@ -98,12 +96,11 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ id, titulo, artista, tono })
+                body: JSON.stringify({ titulo, artista, tono })
             });
 
             if (response.ok) {
                 fetchSongs();
-                document.getElementById('id').value = '';
                 document.getElementById('titulo').value = '';
                 document.getElementById('artista').value = '';
                 document.getElementById('tono').value = '';
@@ -124,18 +121,18 @@
             }
         }
 
-        async function updateSong(id) {
-            const titulo = prompt("Ingrese el nuevo título:");
-            const artista = prompt("Ingrese el nuevo artista:");
-            const tono = prompt("Ingrese el nuevo tono:");
+        async function updateSong(id, currentTitulo, currentArtista, currentTono) {
+            const newTitulo = prompt("Ingrese el nuevo título:", currentTitulo);
+            const newArtista = prompt("Ingrese el nuevo artista:", currentArtista);
+            const newTono = prompt("Ingrese el nuevo tono:", currentTono);
 
-            if (titulo && artista && tono) {
+            if (newTitulo && newArtista && newTono) {
                 const response = await fetch(`/canciones/${id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ titulo, artista, tono })
+                    body: JSON.stringify({ titulo: newTitulo, artista: newArtista, tono: newTono })
                 });
 
                 if (response.ok) {
@@ -152,3 +149,4 @@
     </script>
 </body>
 </html>
+
